@@ -43,8 +43,8 @@ function calculateAll() {
     const efficiency = calculateEfficiency(powerFlow, powerHFG);
     const specificImpulse = calculateSpecificImpulse(thrust, gasFlow);
     const ionCost = calculateIonCost(powerHFG, gasFlow, gasUsage, gas);
-    const equivalentCurrent = calculateEquivalentCurrent(gasFlow, gasUsage, gas);
-    const totalCurrent = calculateTotalCurrent(equivalentCurrent);
+    const equivalentCurrent = calculateEquivalentCurrent(gasFlow, gas);
+    const totalCurrent = calculateTotalCurrent(equivalentCurrent, gasUsage);
     
     // Обновляем результаты на странице
     document.getElementById('power_flow').textContent = powerFlow.toFixed(4);
@@ -83,21 +83,15 @@ function calculateIonCost(powerHFG, gasFlow, gasUsage, gas) {
 }
 
 // Новые функции для расчета токов
-function calculateEquivalentCurrent(gasFlow, gasUsage, gas) {
-    // Эквивалентный ток частиц = (расход газа * коэффициент использования) / (атомная масса * элементарный заряд)
-    const elementaryCharge = 1.60217662e-19; // Кл
-    const avogadroNumber = 6.02214076e23; // частиц/моль
-    
-    // Переводим мг/с в кг/с и вычисляем количество частиц в секунду
-    const particlesPerSecond = (gasFlow * 1e-6 * gasUsage * 0.01) / (gas.atomicMass * 1e-3) * avogadroNumber;
-    
+function calculateEquivalentCurrent(gasFlow, gas) {
+    // Эквивалентный ток частиц = (расход газа * коэффициент использования) / (атомная масса * элементарный заряд)  
     // Вычисляем эквивалентный ток
-    return particlesPerSecond * elementaryCharge;
+    return gasFlow * 1e-6 / gas.atomicMass / 1.66 / 1e-27 * 1.6 * 1e-19;
 }
 
-function calculateTotalCurrent(equivalentCurrent) {
+function calculateTotalCurrent(equivalentCurrent, gasUsage) {
     // Полный ток заряженных частиц (упрощенная формула)
-    return equivalentCurrent * 2;
+    return equivalentCurrent * gasUsage * 0.01;
 }
 
 // Инициализация при загрузке страницы
