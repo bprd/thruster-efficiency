@@ -91,7 +91,7 @@ function calculateEquivalentCurrent(gasFlow, gas) {
 
 function calculateTotalCurrent(equivalentCurrent, gasUsage) {
     // Полный ток заряженных частиц (упрощенная формула)
-    return equivalentCurrent * gasUsage * 0.01 * 0;
+    return equivalentCurrent * gasUsage * 0.01;
 }
 
 // Инициализация при загрузке страницы
