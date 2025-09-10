@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор физических величин</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Калькулятор физических величин</h1>
+        
+        <div class="calculator">
+            <div class="input-section">
+                <h2>Параметры ввода</h2>
+                
+                <div class="input-group" id="input-gas_type">
+                    <label for="gas_type">Тип газа:</label>
+                    <select id="gas_type">
+                        <option value="helium">Гелий</option>
+                        <option value="neon">Неон</option>
+                        <option value="argon">Аргон</option>
+                    </select>
+                </div>
+                
+                <div class="input-group" id="input-gas_flow">
+                    <label for="gas_flow">Расход газа, мг/с:</label>
+                    <input type="number" id="gas_flow" placeholder="Введите значение">
+                </div>
+                
+                <div class="input-group" id="input-power_hfg">
+                    <label for="power_hfg">Мощность ВЧГ, кВт:</label>
+                    <input type="number" id="power_hfg" placeholder="Введите значение">
+                </div>
+                
+                <div class="input-group" id="input-gas_usage">
+                    <label for="gas_usage">Коэффициент использования газа, %:</label>
+                    <input type="number" id="gas_usage" placeholder="Введите значение" min="0" max="100">
+                </div>
+                
+                <div class="input-group" id="input-thrust">
+                    <label for="thrust">Тяга, мН:</label>
+                    <input type="number" id="thrust" placeholder="Введите значение">
+                </div>
+                
+                <button onclick="calculateAll()">Рассчитать</button>
+            </div>
+            
+            <div class="output-section">
+                <h2>Результаты расчёта</h2>
+                
+                <div class="result-group" id="result-power_flow">
+                    <label>Мощность потока, кВт:</label>
+                    <span id="power_flow">0</span>
+                </div>
+                
+                <div class="result-group" id="result-particle_energy">
+                    <label>Средняя энергия частиц, эВ:</label>
+                    <span id="particle_energy">0</span>
+                </div>
+                
+                <div class="result-group" id="result-particle_velocity">
+                    <label>Средняя скорость частиц, км/с:</label>
+                    <span id="particle_velocity">0</span>
+                </div>
+                
+                <div class="result-group" id="result-efficiency">
+                    <label>КПД двигателя, %:</label>
+                    <span id="efficiency">0</span>
+                </div>
+                
+                <div class="result-group" id="result-specific_impulse">
+                    <label>Удельный импульс:</label>
+                    <span id="specific_impulse">0</span>
+                </div>
+                
+                <div class="result-group" id="result-ion_cost">
+                    <label>Цена иона, эВ:</label>
+                    <span id="ion_cost">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
