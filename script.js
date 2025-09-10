@@ -36,13 +36,15 @@ function calculateAll() {
     // Получаем свойства выбранного газа
     const gas = GAS_PROPERTIES[selectedGas];
     
-    // Выполняем расчеты (здесь должны быть ваши реальные формулы)
+    // Выполняем расчеты
     const powerFlow = calculatePowerFlow(thrust, gasFlow, gasUsage);
     const particleEnergy = calculateParticleEnergy(thrust, gasFlow, gasUsage, gas);
     const particleVelocity = calculateParticleVelocity(thrust, gasFlow, gasUsage, gas);
     const efficiency = calculateEfficiency(powerFlow, powerHFG);
     const specificImpulse = calculateSpecificImpulse(thrust, gasFlow);
     const ionCost = calculateIonCost(powerHFG, gasFlow, gasUsage, gas);
+    const equivalentCurrent = calculateEquivalentCurrent(gasFlow, gasUsage, gas);
+    const totalCurrent = calculateTotalCurrent(equivalentCurrent);
     
     // Обновляем результаты на странице
     document.getElementById('power_flow').textContent = powerFlow.toFixed(4);
@@ -51,139 +53,55 @@ function calculateAll() {
     document.getElementById('efficiency').textContent = efficiency.toFixed(2);
     document.getElementById('specific_impulse').textContent = specificImpulse.toFixed(2);
     document.getElementById('ion_cost').textContent = ionCost.toFixed(2);
+    document.getElementById('equivalent_current').textContent = equivalentCurrent.toFixed(6);
+    document.getElementById('total_current').textContent = totalCurrent.toFixed(6);
 }
 
-// Функции расчета (замените на ваши реальные формулы)
+// Функции расчета
 function calculatePowerFlow(thrust, gasFlow, gasUsage) {
-    // Пример расчета: мощность потока = расход газа * коэффициент использования * константа
     return thrust * thrust / (gasFlow * gasUsage * 0.01) / 1e3 / 2;
 }
 
 function calculateParticleEnergy(thrust, gasFlow, gasUsage, gas) {
-    // Пример расчета: энергия частиц = мощность / (расход газа * атомная масса)
     return gas.atomicMass * 1.66 * 1e-27 * 1e6 * (thrust / (gasFlow * gasUsage * 0.01)) * (thrust / (gasFlow * gasUsage * 0.01)) / 2 / 1.6 / 1e-19;
 }
 
 function calculateParticleVelocity(thrust, gasFlow, gasUsage, gas) {
-    // Пример расчета: скорость = sqrt(2 * энергия / масса)
     return (thrust / (gasFlow * gasUsage * 0.01));
-
 }
 
 function calculateEfficiency(powerFlow, powerHFG) {
-    // Пример расчета: КПД = (мощность потока / мощность ВЧГ) * 100
     return powerHFG > 0 ? (powerFlow / powerHFG) * 100 : 0;
 }
 
 function calculateSpecificImpulse(thrust, gasFlow) {
-    // Пример расчета: удельный импульс = тяга / (расход газа * g)
     return (thrust / (gasFlow * 9.81)) * 1e3;
 }
 
 function calculateIonCost(powerHFG, gasFlow, gasUsage, gas) {
-    // Пример расчета: цена иона = мощность ВЧГ / (расход газа * коэффициент использования)
     return (gasFlow * gasUsage * 0.01) > 0 ? (powerHFG * 1000 / (gasFlow * 1e-6 * gasUsage * 0.01 / gas.atomicMass / 1.66 / 1e-27 * 1.6 * 1e-19) - gas.ionizationEnergy) : 0;
 }
 
-// Функции для перетаскивания элементов
-function initDragAndDrop() {
-    const inputContainer = document.querySelector('.input-section');
-    const outputContainer = document.querySelector('.output-section');
+// Новые функции для расчета токов
+function calculateEquivalentCurrent(gasFlow, gasUsage, gas) {
+    // Эквивалентный ток частиц = (расход газа * коэффициент использования) / (атомная масса * элементарный заряд)
+    const elementaryCharge = 1.60217662e-19; // Кл
+    const avogadroNumber = 6.02214076e23; // частиц/моль
     
-    // Делаем все группы перетаскиваемыми
-    const draggableElements = document.querySelectorAll('.input-group, .result-group');
+    // Переводим мг/с в кг/с и вычисляем количество частиц в секунду
+    const particlesPerSecond = (gasFlow * 1e-6 * gasUsage * 0.01) / (gas.atomicMass * 1e-3) * avogadroNumber;
     
-    draggableElements.forEach(element => {
-        element.setAttribute('draggable', 'true');
-        
-        element.addEventListener('dragstart', (e) => {
-            e.dataTransfer.setData('text/plain', element.id);
-            element.classList.add('dragging');
-        });
-        
-        element.addEventListener('dragend', () => {
-            element.classList.remove('dragging');
-        });
-    });
-    
-    // Настраиваем зоны, куда можно перетаскивать
-    const dropZones = [inputContainer, outputContainer];
-    
-    dropZones.forEach(zone => {
-        zone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            zone.classList.add('drag-over');
-        });
-        
-        zone.addEventListener('dragleave', () => {
-            zone.classList.remove('drag-over');
-        });
-        
-        zone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            zone.classList.remove('drag-over');
-            
-            const id = e.dataTransfer.getData('text/plain');
-            const draggedElement = document.getElementById(id);
-            
-            if (draggedElement) {
-                zone.appendChild(draggedElement);
-                saveLayout();
-            }
-        });
-    });
+    // Вычисляем эквивалентный ток
+    return particlesPerSecond * elementaryCharge;
 }
 
-// Сохранение расположения элементов в localStorage
-function saveLayout() {
-    const inputSection = document.querySelector('.input-section');
-    const outputSection = document.querySelector('.output-section');
-    
-    const inputOrder = Array.from(inputSection.children)
-        .filter(el => el.classList.contains('input-group') || el.classList.contains('result-group'))
-        .map(el => el.id);
-    
-    const outputOrder = Array.from(outputSection.children)
-        .filter(el => el.classList.contains('input-group') || el.classList.contains('result-group'))
-        .map(el => el.id);
-    
-    localStorage.setItem('inputOrder', JSON.stringify(inputOrder));
-    localStorage.setItem('outputOrder', JSON.stringify(outputOrder));
-}
-
-// Восстановление расположения элементов из localStorage
-function loadLayout() {
-    const inputOrder = JSON.parse(localStorage.getItem('inputOrder') || '[]');
-    const outputOrder = JSON.parse(localStorage.getItem('outputOrder') || '[]');
-    
-    const inputSection = document.querySelector('.input-section');
-    const outputSection = document.querySelector('.output-section');
-    
-    // Восстанавливаем порядок во входной секции
-    inputOrder.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) {
-            inputSection.appendChild(element);
-        }
-    });
-    
-    // Восстанавливаем порядок в выходной секции
-    outputOrder.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) {
-            outputSection.appendChild(element);
-        }
-    });
+function calculateTotalCurrent(equivalentCurrent) {
+    // Полный ток заряженных частиц (упрощенная формула)
+    return equivalentCurrent * 2;
 }
 
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
-    // Загружаем сохраненное расположение элементов
-    loadLayout();
-    
-    // Инициализируем перетаскивание
-    initDragAndDrop();
-    
     // Добавляем обработчики изменений для автоматического расчета
     document.getElementById('gas_type').addEventListener('change', calculateAll);
     document.getElementById('gas_flow').addEventListener('input', calculateAll);
