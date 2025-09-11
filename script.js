@@ -59,7 +59,7 @@ function calculateAll() {
 
 // Функции расчета
 function calculatePowerFlow(thrust, gasFlow, gasUsage) {
-    return thrust * thrust / (gasFlow * gasUsage * 0.01) / 1e3 / 2;
+    return thrust * thrust / (gasFlow ) / 1e3 / 2;
 }
 
 function calculateParticleEnergy(thrust, gasFlow, gasUsage, gas) {
