@@ -63,7 +63,7 @@ function calculatePowerFlow(thrust, gasFlow, gasUsage) {
 }
 
 function calculateParticleEnergy(thrust, gasFlow, gasUsage, gas) {
-    return gas.atomicMass * 1.66 * 1e-27 * 1e6 * (thrust / (gasFlow)) * (thrust / (gasFlow)) / 2 / 1.6 / 1e-19;
+   return gas.atomicMass * 1.66 * 1e-27 * 1e6 * (thrust / (gasFlow * gasUsage * 0.01)) * (thrust / (gasFlow * gasUsage * 0.01)) / 2 / 1.6 / 1e-19;
 }
 
 function calculateParticleVelocity(thrust, gasFlow, gasUsage, gas) {
