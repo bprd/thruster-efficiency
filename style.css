@@ -58,7 +58,7 @@ h2 {
     padding: 10px;
     border: 2px solid #ddd;
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 18px;
     box-sizing: border-box;
 }
 
@@ -90,13 +90,13 @@ h2 {
     font-weight: bold;
     color: #2c3e50;
     margin-bottom: 5px;
-    font-size: 14px;
+    font-size: 18px;
 }
 
 .engine-section .result-group span {
     font-weight: bold;
     color: #e74c3c;
-    font-size: 16px;
+    font-size: 20px;
 }
 
 .particles-table {
