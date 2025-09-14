@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор эффективности двигателя</title>
+    <title>Калькулятор параметров двигателя</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Калькулятор эффективности двигателя</h1>
+        <h1>Калькулятор параметров двигателя</h1>
         
-        <div class="calculator">
+        <div class="calculator-grid">
+            <!-- Левая колонка: Вводные данные -->
             <div class="input-section">
-                <h2>Параметры ввода</h2>
+                <h2>Вводные данные</h2>
                 
-                <div class="input-group" id="input-gas_type">
+                <div class="input-group">
                     <label for="gas_type">Тип газа:</label>
                     <select id="gas_type">
                         <option value="helium">Гелий</option>
@@ -23,68 +24,117 @@
                     </select>
                 </div>
                 
-                <div class="input-group" id="input-gas_flow">
+                <div class="input-group">
                     <label for="gas_flow">Расход газа, мг/с:</label>
                     <input type="number" id="gas_flow" placeholder="Введите значение">
                 </div>
                 
-                <div class="input-group" id="input-power_hfg">
-                    <label for="power_hfg">Мощность ВЧГ, кВт:</label>
-                    <input type="number" id="power_hfg" placeholder="Введите значение">
+                <div class="input-group">
+                    <label for="equivalent_current">Эквивалентный ток частиц, А:</label>
+                    <input type="number" id="equivalent_current" placeholder="Введите значение">
                 </div>
                 
-                <div class="input-group" id="input-gas_usage">
+                <div class="input-group">
                     <label for="gas_usage">Коэффициент использования газа, %:</label>
                     <input type="number" id="gas_usage" placeholder="Введите значение" min="0" max="100">
                 </div>
                 
-                <div class="input-group" id="input-thrust">
+                <div class="input-group">
+                    <label for="particle_energy">Средняя энергия ионов, эВ:</label>
+                    <input type="number" id="particle_energy" placeholder="Введите значение">
+                </div>
+                
+                <div class="input-group">
                     <label for="thrust">Тяга, мН:</label>
                     <input type="number" id="thrust" placeholder="Введите значение">
                 </div>
                 
-                <button onclick="calculateAll()">Рассчитать</button>
+                <div class="input-group">
+                    <label for="power_hfg">Мощность ВЧГ, кВт:</label>
+                    <input type="number" id="power_hfg" placeholder="Введите значение">
+                </div>
             </div>
             
-            <div class="output-section">
-                <h2>Результаты расчёта</h2>
-                
-                <div class="result-group" id="result-power_flow">
-                    <label>Мощность потока, кВт:</label>
-                    <span id="power_flow">0</span>
+            <!-- Правая колонка: Объединенные параметры двигателя и частиц -->
+            <div class="combined-section">
+                <!-- Параметры двигателя -->
+                <div class="engine-section">
+                    <h2>Параметры двигателя</h2>
+                    
+                    <div class="result-row">
+                        <div class="result-group">
+                            <label>Удельный импульс, с:</label>
+                            <span id="specific_impulse">0</span>
+                        </div>
+                        <div class="result-group">
+                            <label>Цена иона, эВ:</label>
+                            <span id="ion_cost">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-group">
+                            <label>Поток энергии, кВт:</label>
+                            <span id="energy_flow">0</span>
+                        </div>
+                        <div class="result-group">
+                            <label>КПД энергетический, %:</label>
+                            <span id="energy_efficiency">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-group">
+                            <label>Мощность реактивной струи, кВт:</label>
+                            <span id="jet_power">0</span>
+                        </div>
+                        <div class="result-group">
+                            <label>КПД тяговый, %:</label>
+                            <span id="thrust_efficiency">0</span>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="result-group" id="result-particle_energy">
-                    <label>Средняя энергия ионов, эВ:</label>
-                    <span id="particle_energy">0</span>
-                </div>
-                
-                <div class="result-group" id="result-particle_velocity">
-                    <label>Средняя скорость частиц, км/с:</label>
-                    <span id="particle_velocity">0</span>
-                </div>
-                
-                <div class="result-group" id="result-efficiency">
-                    <label>КПД двигателя, %:</label>
-                    <span id="efficiency">0</span>
-                </div>
-                
-                <div class="result-group" id="result-specific_impulse">
-                    <label>Удельный импульс, c:</label>
-                    <span id="specific_impulse">0</span>
-                </div>
-                
-                <div class="result-group" id="result-ion_cost">
-                    <label>Цена иона, эВ:</label>
-                    <span id="ion_cost">0</span>
-                </div>
-                <div class="result-group">
-                    <label>Эквивалентный ток частиц, А:</label>
-                    <span id="equivalent_current">0</span>
-                </div>
-                <div class="result-group">
-                    <label>Полный ток заряженных частиц, А:</label>
-                    <span id="total_current">0</span>
+                <!-- Параметры частиц -->
+                <div class="particles-section">
+                    <h2>Параметры частиц</h2>
+                    
+                    <table class="particles-table">
+                        <thead>
+                            <tr>
+                                <th>Параметр</th>
+                                <th>Ионы</th>
+                                <th>Нейтралы</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Скорость, км/с</td>
+                                <td id="ion_velocity">0</td>
+                                <td id="neutral_velocity">0</td>
+                            </tr>
+                            <tr>
+                                <td>Энергия, эВ</td>
+                                <td id="ion_energy">0</td>
+                                <td id="neutral_energy">0</td>
+                            </tr>
+                            <tr>
+                                <td>Массовый расход, мг/c</td>
+                                <td id="ion_mass_flow">0</td>
+                                <td id="neutral_mass_flow">0</td>
+                            </tr>
+                            <tr>
+                                <td>Эквивалентный ток частиц, А</td>
+                                <td id="ion_current">0</td>
+                                <td id="neutral_current">0</td>
+                            </tr>
+                            <tr>
+                                <td>Поток энергии, кВт</td>
+                                <td id="ion_energy_flow">0</td>
+                                <td id="neutral_energy_flow">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
