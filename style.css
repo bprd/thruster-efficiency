@@ -103,12 +103,14 @@ h2 {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    table-layout: fixed; /* Важное свойство для равномерного распределения ширины */
 }
 
 .particles-table th, .particles-table td {
     padding: 10px;
     text-align: center;
     border: 1px solid #ddd;
+    word-wrap: break-word; /* Перенос длинных слов */
 }
 
 .particles-table th {
@@ -124,6 +126,22 @@ h2 {
     text-align: left;
     font-weight: bold;
     background-color: #e9ecef;
+}
+
+/* Устанавливаем равную ширину для всех столбцов */
+.particles-table th:nth-child(1),
+.particles-table td:nth-child(1) {
+    width: 33%;
+}
+
+.particles-table th:nth-child(2),
+.particles-table td:nth-child(2) {
+    width: 33%;
+}
+
+.particles-table th:nth-child(3),
+.particles-table td:nth-child(3) {
+    width: 33%;
 }
 
 /* Адаптивность для мобильных устройств */
