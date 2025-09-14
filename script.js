@@ -63,9 +63,9 @@ const neutralVelocity = calculateNeutralVelocity(neutralEnergy, gas);
     // Обновляем результаты в центральной колонке
     document.getElementById('specific_impulse').textContent = specificImpulse.toFixed(2);
     document.getElementById('ion_cost').textContent = ionCost.toFixed(2);
-    document.getElementById('energy_flow').textContent = energyFlow.toFixed(4);
+    document.getElementById('energy_flow').textContent = energyFlow.toFixed(2);
     document.getElementById('energy_efficiency').textContent = energyEfficiency.toFixed(2);
-    document.getElementById('jet_power').textContent = jetPower.toFixed(4);
+    document.getElementById('jet_power').textContent = jetPower.toFixed(2);
     document.getElementById('thrust_efficiency').textContent = thrustEfficiency.toFixed(2);
     
     // Обновляем таблицу параметров частиц
@@ -73,12 +73,12 @@ const neutralVelocity = calculateNeutralVelocity(neutralEnergy, gas);
     document.getElementById('neutral_velocity').textContent = neutralVelocity.toFixed(2);
     document.getElementById('ion_energy').textContent = ionEnergy.toFixed(2);
     document.getElementById('neutral_energy').textContent = neutralEnergy.toFixed(2);
-    document.getElementById('ion_mass_flow').textContent = ionMassFlow.toFixed(4);
-    document.getElementById('neutral_mass_flow').textContent = neutralMassFlow.toFixed(4);
-    document.getElementById('ion_current').textContent = ionCurrent.toFixed(6);
-    document.getElementById('neutral_current').textContent = neutralCurrent.toFixed(6);
-    document.getElementById('ion_energy_flow').textContent = ionEnergyFlow.toFixed(4);
-    document.getElementById('neutral_energy_flow').textContent = neutralEnergyFlow.toFixed(4);
+    document.getElementById('ion_mass_flow').textContent = ionMassFlow.toFixed(2);
+    document.getElementById('neutral_mass_flow').textContent = neutralMassFlow.toFixed(2);
+    document.getElementById('ion_current').textContent = ionCurrent.toFixed(2);
+    document.getElementById('neutral_current').textContent = neutralCurrent.toFixed(2);
+    document.getElementById('ion_energy_flow').textContent = ionEnergyFlow.toFixed(2);
+    document.getElementById('neutral_energy_flow').textContent = neutralEnergyFlow.toFixed(2);
 }
 
 // Функции расчета параметров двигателя
@@ -139,13 +139,13 @@ function syncGasFlowAndCurrent() {
     if (this.id === 'gas_flow') {
         const newGasFlow = parseFloat(this.value) || 0;
         const newCurrent = (newGasFlow * 1e-6) / (gas.atomicMass * 1e-3) * avogadroNumber * elementaryCharge;
-        document.getElementById('equivalent_current').value = newCurrent.toFixed(6);
+        document.getElementById('equivalent_current').value = newCurrent.toFixed(2);
     }
     // Если меняется ток, пересчитываем расход газа
     else if (this.id === 'equivalent_current') {
         const newCurrent = parseFloat(this.value) || 0;
         const newGasFlow = (newCurrent * gas.atomicMass * 1e-3) / (elementaryCharge * avogadroNumber) * 1e6;
-        document.getElementById('gas_flow').value = newGasFlow.toFixed(4);
+        document.getElementById('gas_flow').value = newGasFlow.toFixed(2);
     }
     
     calculateAll();
