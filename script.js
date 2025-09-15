@@ -56,7 +56,7 @@ function calculateAll() {
     const ionCurrent = equivalentCurrent * gasUsage / 100;
     const neutralCurrent = equivalentCurrent * (1 - gasUsage / 100);
     const ionEnergyFlow = calculateIonEnergyFlow(ionCurrent, ionEnergy);
-    const neutralEnergy = calculateNeutralEnergy(energyFlow, ionEnergyFlow, neutralCurrent);
+    const neutralEnergy = calculateNeutralEnergy(gasUsage, neutralCurrent, ionEnergy, equivalentCurrent, ionCurrent, thrust, gasFlow);
 const neutralVelocity = calculateNeutralVelocity(neutralEnergy, gas);
     const neutralEnergyFlow = calculateNeutralEnergyFlow(neutralCurrent, neutralEnergy);
     
@@ -121,8 +121,12 @@ function calculateIonEnergyFlow(ionCurrent, ionEnergy) {
     return ionCurrent * ionEnergy / 1000;
 }
 
-function calculateNeutralEnergy(energyFlow, ionEnergyFlow, neutralCurrent) {
-    return (energyFlow-ionEnergyFlow)/(neutralCurrent)*1000;
+function calculateNeutralEnergy(gasUsage, neutralCurrent, ionEnergy, equivalentCurrent, ionCurrent, thrust, gasFlow) {
+    const a = (1-gasUsage) * neutralCurrent;
+    const b = Math.sqrt(gasUsage * (1 - gasUsage) * ionEnergy) * equivalentCurrent;
+    const c = gasUsage * ionCurrent * ionEnergy - thrust * thrust / 2 / gasFlow;
+    const t = (-b+Math.sqrt(b*b-4*a*c)/2/a;
+    return t*t;
 }
 
 function calculateNeutralEnergyFlow(neutralCurrent, neutralEnergy) {
