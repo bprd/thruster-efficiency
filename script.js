@@ -42,11 +42,10 @@ function calculateAll() {
     
     // Выполняем расчеты
     const specificImpulse = calculateSpecificImpulse(thrust, gasFlow);
-    const ionCost = calculateIonCost(powerHFG, gasFlow, gasUsage, gas);
+    
     const jetPower = calculateJetPower(thrust, gasFlow);
-    const energyFlow = calculateEnergyFlow(jetPower, gasUsage);
-    const thrustEfficiency = calculateThrustEfficiency(jetPower, powerHFG);
-    const energyEfficiency = calculateEnergyEfficiency(thrustEfficiency, gasUsage);    
+
+    const thrustEfficiency = calculateThrustEfficiency(jetPower, powerHFG);   
     // Расчет параметров частиц
     const ionVelocity = calculateIonVelocity(particleEnergy, gas);
     
@@ -54,12 +53,15 @@ function calculateAll() {
     const ionMassFlow = gasFlow * gasUsage / 100;
     const neutralMassFlow = gasFlow * (1 - gasUsage / 100);
     const ionCurrent = equivalentCurrent * gasUsage / 100;
+const ionCost = calculateIonCost(powerHFG,  ionCurrent, gas);
     const neutralCurrent = equivalentCurrent * (1 - gasUsage / 100);
     const ionEnergyFlow = calculateIonEnergyFlow(ionCurrent, ionEnergy);
-    const neutralEnergy = calculateNeutralEnergy(gasUsage, neutralCurrent, ionEnergy, equivalentCurrent, ionCurrent, thrust, gasFlow);
+    const neutralEnergy = calculateNeutralEnergy(gasUsage, neutralCurrent, ionEnergy, equivalentCurrent, ionCurrent, jetPower);
 const neutralVelocity = calculateNeutralVelocity(neutralEnergy, gas);
     const neutralEnergyFlow = calculateNeutralEnergyFlow(neutralCurrent, neutralEnergy);
-    
+    const energyFlow = calculateEnergyFlow(neutralEnergyFlow , ionEnergyFlow);
+    const energyEfficiency = calculateEnergyEfficiency(energyFlow , powerHFG); 
+
     // Обновляем результаты в центральной колонке
     document.getElementById('specific_impulse').textContent = specificImpulse.toFixed(2);
     document.getElementById('ion_cost').textContent = ionCost.toFixed(2);
@@ -67,6 +69,7 @@ const neutralVelocity = calculateNeutralVelocity(neutralEnergy, gas);
     document.getElementById('energy_efficiency').textContent = energyEfficiency.toFixed(2);
     document.getElementById('jet_power').textContent = jetPower.toFixed(2);
     document.getElementById('thrust_efficiency').textContent = thrustEfficiency.toFixed(2);
+
     
     // Обновляем таблицу параметров частиц
     document.getElementById('ion_velocity').textContent = ionVelocity.toFixed(2);
@@ -86,17 +89,13 @@ function calculateSpecificImpulse(thrust, gasFlow) {
     return gasFlow > 0 ? (thrust / (gasFlow * 9.81)) * 1e3 : 0;
 }
 
-function calculateIonCost(powerHFG, gasFlow, gasUsage, gas) {
+function calculateIonCost(powerHFG, ionCurrent, gas) {
     return (gasFlow * gasUsage * 0.01) > 0 ? 
-        (powerHFG * 1000 / (gasFlow * 1e-6 * gasUsage * 0.01 / gas.atomicMass / 1.66 / 1e-27 * 1.6 * 1e-19) - gas.ionizationEnergy) : 0;
+        (powerHFG * 1000 /  ionCurrent  - gas.ionizationEnergy) : 0;
 }
 
-function calculateEnergyFlow(jetPower, gasUsage) {
-    return jetPower / gasUsage * 100;
-}
-
-function calculateEnergyEfficiency(thrustEfficiency, gasUsage) {
-    return thrustEfficiency > 0 ? (thrustEfficiency / gasUsage) * 100 : 0;
+function calculateEnergyEfficiency(energyFlow, powerHFG) {
+    return energyFlow> 0 ? (energyFlow/ powerHFG) * 100 : 0;
 }
 
 function calculateJetPower(thrust, gasFlow) {
@@ -121,16 +120,20 @@ function calculateIonEnergyFlow(ionCurrent, ionEnergy) {
     return ionCurrent * ionEnergy / 1000;
 }
 
-function calculateNeutralEnergy(gasUsage, neutralCurrent, ionEnergy, equivalentCurrent, ionCurrent, thrust, gasFlow) {
-    const a = (1-gasUsage) * neutralCurrent;
-    const b = Math.sqrt(gasUsage * (1 - gasUsage) * ionEnergy) * equivalentCurrent;
-    const c = gasUsage * ionCurrent * ionEnergy - thrust * thrust / 2 / gasFlow;
-    const t = (-b+Math.sqrt(b*b-4*a*c)/2/a;
+function calculateNeutralEnergy(gasUsage, neutralCurrent, ionEnergy, equivalentCurrent, ionCurrent, jetPower) {
+    const a = (1-gasUsage/100) * neutralCurrent;
+    const b = Math.sqrt(gasUsage/100 * (1 - gasUsage/100) * ionEnergy) * equivalentCurrent;
+    const c = gasUsage/100 * ionCurrent * ionEnergy - jetPower * 1000;
+    const t = (-b+Math.sqrt(b*b-4*a*c))/2/a;
     return t*t;
 }
 
 function calculateNeutralEnergyFlow(neutralCurrent, neutralEnergy) {
     return neutralCurrent * neutralEnergy/1000;
+}
+
+function calculateEnergyFlow(neutralEnergyFlow, ionEnergyFlow) {
+    return neutralEnergyFlow+ionEnergyFlow;
 }
 
 // Функция для связи расхода газа и эквивалентного тока
