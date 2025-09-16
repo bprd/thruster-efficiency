@@ -122,7 +122,7 @@ function calculateIonEnergyFlow(ionCurrent, ionEnergy) {
 
 function calculateNeutralEnergy(gasUsage, neutralCurrent, ionEnergy, equivalentCurrent, ionCurrent, jetPower) {
     const a = (1-gasUsage/100) * neutralCurrent;
-    const b = Math.sqrt(gasUsage/100 * (1 - gasUsage/100) * ionEnergy) * equivalentCurrent;
+    const b = 2*Math.sqrt(gasUsage/100 * (1 - gasUsage/100) * ionEnergy) * equivalentCurrent;
     const c = gasUsage/100 * ionCurrent * ionEnergy - jetPower * 1000;
     const t = (-b+Math.sqrt(b*b-4*a*c))/2/a;
     return t*t;
@@ -177,3 +177,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Выполняем первоначальный расчет
     calculateAll();
 });
+
