@@ -112,7 +112,7 @@ function calculateIonVelocity(particleEnergy, gas) {
 }
 
 function calculateNeutralVelocity(neutralEnergy, gas) {
-    return Math.sqrt(2 * neutralEnergy * 1.602e-19 / (gas.atomicMass * 1.6605e-27)) / 1000;
+    return (specificImpulse/1000*9.81-gasUsage/100*ionVelocity)/(1-gasUsage/100);
 
 }
 
@@ -177,4 +177,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // Выполняем первоначальный расчет
     calculateAll();
 });
+
 
