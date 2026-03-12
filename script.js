@@ -57,7 +57,7 @@ const ionCost = calculateIonCost(powerHFG,  ionCurrent, gas);
     const neutralCurrent = equivalentCurrent * (1 - gasUsage / 100);
     const ionEnergyFlow = calculateIonEnergyFlow(ionCurrent, ionEnergy);
     const neutralEnergy = calculateNeutralEnergy(gasUsage, neutralCurrent, ionEnergy, equivalentCurrent, ionCurrent, jetPower);
-const neutralVelocity = calculateNeutralVelocity(neutralEnergy, gas);
+const neutralVelocity = calculateNeutralVelocity(specificImpulse,gasUsage,ionVelocity);
     const neutralEnergyFlow = calculateNeutralEnergyFlow(neutralCurrent, neutralEnergy);
     const energyFlow = calculateEnergyFlow(neutralEnergyFlow , ionEnergyFlow);
     const energyEfficiency = calculateEnergyEfficiency(energyFlow , powerHFG); 
@@ -111,7 +111,7 @@ function calculateIonVelocity(particleEnergy, gas) {
     return Math.sqrt(2 * particleEnergy * 1.602e-19 / (gas.atomicMass * 1.6605e-27)) / 1000;
 }
 
-function calculateNeutralVelocity(neutralEnergy, gas) {
+function calculateNeutralVelocity(specificImpulse,gasUsage,ionVelocity) {
     return (specificImpulse/1000*9.81-gasUsage/100*ionVelocity)/(1-gasUsage/100);
 
 }
@@ -177,5 +177,3 @@ document.addEventListener('DOMContentLoaded', () => {
     // Выполняем первоначальный расчет
     calculateAll();
 });
-
-
