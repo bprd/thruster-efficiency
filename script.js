@@ -14,6 +14,11 @@ const GAS_PROPERTIES = {
         name: "Аргон",
         atomicMass: 40, // г/моль
         ionizationEnergy: 15.759 // эВ
+    },
+    krypton: {
+        name: "Криптон",
+        atomicMass: 84, // г/моль
+        ionizationEnergy: 13.99 // name
     }
 };
 
